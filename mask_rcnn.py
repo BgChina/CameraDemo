@@ -126,11 +126,13 @@ class MaskRCNN:
             outputFile.write(str(depth_mm/10) + " cm \n")
             outputFile.write("obj: " + class_name+ "\n")
             outputFile.flush()
-            
+
             print(depth_mm/10)
             print(class_name)
 
         return bgr_frame
 
 
-          
+
+
+
