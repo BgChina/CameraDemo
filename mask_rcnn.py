@@ -1,6 +1,8 @@
 # https://pysource.com/instance-segmentation-mask-rcnn-with-python-and-opencv
 import cv2
 import numpy as np
+import math
+import matplotlib.pyplot as plt    
 
 class MaskRCNN:
     def __init__(self):
@@ -29,10 +31,40 @@ class MaskRCNN:
         self.obj_centers = []
         self.obj_contours = []
 
+
         # Distances
         self.distances = []
 
+    def imDetect(self):
+        image = cv2.imread('Images/Test2.png')
+        qrCodeDetector = cv2.QRCodeDetector()
+        decodedText, points, _ = qrCodeDetector.detectAndDecode(image)
+        qr_data = decodedText.split(',')
+        qr_size = qr_data[0]
+   
 
+        plt.imshow(image)
+        plt.show()
+
+        dists = [] #This is for estimating distances between corner points.
+           #I will average them to find ratio of pixels in image vs qr_size  
+           #in the optimal case, all dists should be equal
+
+        if points is not None:
+            pts = len(points)
+            for i in range(pts):
+                p1 = points[i][0]
+                p2 = points[(i+1) % pts][0]
+
+                dists.append(math.sqrt((p1[0]-p2[0])**2 + (p1[1]-p2[1])**2))
+
+                print('line', tuple(p1), tuple(p2))
+                image = cv2.line(image, tuple(p1), tuple(p2), (255,0,0), 5)
+        else:
+            print("QR code not detected")
+
+        print('distances: ', dists)
+        
     def detect_objects_mask(self, bgr_frame):
         blob = cv2.dnn.blobFromImage(bgr_frame, swapRB=True)
         self.net.setInput(blob)

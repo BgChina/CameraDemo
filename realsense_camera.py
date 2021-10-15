@@ -25,7 +25,7 @@ class RealsenseCamera:
         aligned_frames = self.align.process(frames)
         depth_frame = aligned_frames.get_depth_frame()
         color_frame = aligned_frames.get_color_frame()
-        
+
         if not depth_frame or not color_frame:
             # If there is no frame, probably camera not connected, return False
             print("Error, impossible to get the frame, make sure that the Intel Realsense camera is correctly connected")
