@@ -36,34 +36,36 @@ class MaskRCNN:
         self.distances = []
 
     def imDetect(self):
-        image = cv2.imread('Images/Test2.png')
-        qrCodeDetector = cv2.QRCodeDetector()
-        decodedText, points, _ = qrCodeDetector.detectAndDecode(image)
-        qr_data = decodedText.split(',')
-        qr_size = qr_data[0]
-   
+        # Load imgae, grayscale, Gaussian blur, Otsu's threshold
+        image = cv2.imread('images/Test2.png')
+        original = image.copy()
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        blur = cv2.GaussianBlur(gray, (9,9), 0)
+        thresh = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
 
-        plt.imshow(image)
-        plt.show()
+        # Morph close
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5,5))
+        close = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel, iterations=2)
 
-        dists = [] #This is for estimating distances between corner points.
-           #I will average them to find ratio of pixels in image vs qr_size  
-           #in the optimal case, all dists should be equal
+        # Find contours and filter for QR code
+        cnts = cv2.findContours(close, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        cnts = cnts[0] if len(cnts) == 2 else cnts[1]
+        for c in cnts:
+            peri = cv2.arcLength(c, True)
+            approx = cv2.approxPolyDP(c, 0.04 * peri, True)
+            x,y,w,h = cv2.boundingRect(approx)
+            area = cv2.contourArea(c)
+            ar = w / float(h)
+            if len(approx) == 4 and area > 1000 and (ar > .85 and ar < 1.3):
+                cv2.rectangle(image, (x, y), (x + w, y + h), (36,255,12), 3)
+                ROI = original[y:y+h, x:x+w]
+                cv2.imwrite('ROI.png', ROI)
 
-        if points is not None:
-            pts = len(points)
-            for i in range(pts):
-                p1 = points[i][0]
-                p2 = points[(i+1) % pts][0]
-
-                dists.append(math.sqrt((p1[0]-p2[0])**2 + (p1[1]-p2[1])**2))
-
-                print('line', tuple(p1), tuple(p2))
-                image = cv2.line(image, tuple(p1), tuple(p2), (255,0,0), 5)
-        else:
-            print("QR code not detected")
-
-        print('distances: ', dists)
+        cv2.imshow('thresh', thresh)
+        cv2.imshow('close', close)
+        cv2.imshow('image', image)
+        cv2.imshow('ROI', ROI)
+        cv2.waitKey()     
         
     def detect_objects_mask(self, bgr_frame):
         blob = cv2.dnn.blobFromImage(bgr_frame, swapRB=True)
