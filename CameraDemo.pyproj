@@ -25,6 +25,9 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="pointcloud.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="mask_rcnn.py" />
     <Compile Include="measure_object_distance.py" />
     <Compile Include="realsense_camera.py" />
