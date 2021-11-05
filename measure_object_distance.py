@@ -5,8 +5,9 @@ from mask_rcnn import *
 
 
 # Load Realsense camera
-#rs = RealsenseCamera()
+rs = RealsenseCamera()
 mrcnn = MaskRCNN()
+
 
 while True:
 	# Get frame in real time from Realsense camera
@@ -22,7 +23,8 @@ while True:
 	#mrcnn.draw_object_info(bgr_frame, depth_frame)
 
 	#get QR code
-	mrcnn.imDetect();
+	
+	rs.imDetect();
 
 	#cv2.imshow("depth frame", depth_frame)
 	#cv2.imshow("Bgr frame", bgr_frame)
