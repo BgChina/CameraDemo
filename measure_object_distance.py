@@ -9,8 +9,9 @@ def show_distance(event, x, y, args, params):
     global point
     point = (x, y)
 
-# Initialize Camera Intel Realsense
-dc = DepthCamera()
+# Load Realsense camera
+#rs = RealsenseCamera()
+mrcnn = MaskRCNN()
 
 # Create mouse event
 cv2.namedWindow("Color frame")
