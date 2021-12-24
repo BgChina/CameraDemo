@@ -12,7 +12,7 @@ def show_distance(event, x, y, args, params):
 # Load Realsense camera
 #rs = RealsenseCamera()
 mrcnn = MaskRCNN()
-
+# NEED TO BE DONE, TAKE IMAGE, AND CAPTURE QR CODE
 # Create mouse event
 cv2.namedWindow("Color frame")
 cv2.setMouseCallback("Color frame", show_distance)

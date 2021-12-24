@@ -18,7 +18,9 @@ Keyboard:
     [e]     Export points to ply (./out.ply)
     [q\ESC] Quit
 """
-
+# NEED TO BE DONE: 
+# CAPTURE NINE QUADRANTS FOR DISTANCE
+# ASSIGN BUTTONS FOR EACH QUADRANT OR CYCLE
 import math
 import time
 import cv2
